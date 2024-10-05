@@ -50,8 +50,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             ex=settings.ACTIVATION_CODE_EXPIRY
         )
 
-        sms_client = get_sms_client()
-        success, message = sms_client.send_sms(phone_number, f"Код верификации для входа: {activation_code}")
+        # sms_client = get_sms_client()
+        # success, message = sms_client.send_sms(phone_number, f"Код верификации для входа: {activation_code}")
         return user_data
 
 
