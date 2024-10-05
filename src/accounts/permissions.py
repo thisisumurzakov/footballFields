@@ -16,7 +16,7 @@ class IsAdmin(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.user and request.user.role == 'admin'
+        return request.user and request.user.role == "admin"
 
 
 class HasOwnerRole(permissions.BasePermission):
@@ -41,7 +41,7 @@ class HasOwnerRole(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.user and request.user.role == 'owner'
+        return request.user and request.user.role == "owner"
 
 
 class IsOwnerRoleOrReadOnly(permissions.BasePermission):
@@ -55,4 +55,8 @@ class IsOwnerRoleOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         # Allow write methods only if the user is authenticated and has the 'owner' role
-        return request.user and request.user.is_authenticated and request.user.role == 'owner'
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == "owner"
+        )

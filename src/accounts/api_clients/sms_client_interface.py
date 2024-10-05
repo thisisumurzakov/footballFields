@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class SMSClientInterface(ABC):
-
     @abstractmethod
     def authenticate(self):
         """Method to authenticate the client and return a token."""

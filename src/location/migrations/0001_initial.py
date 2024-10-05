@@ -5,51 +5,87 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Region',
+            name="Region",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100, unique=True)),
             ],
             options={
-                'verbose_name': 'Region',
-                'verbose_name_plural': 'Regions',
-                'ordering': ['name'],
+                "verbose_name": "Region",
+                "verbose_name_plural": "Regions",
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='City',
+            name="City",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('region', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cities', to='location.region')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "region",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cities",
+                        to="location.region",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'City',
-                'verbose_name_plural': 'Cities',
-                'ordering': ['name'],
-                'unique_together': {('region', 'name')},
+                "verbose_name": "City",
+                "verbose_name_plural": "Cities",
+                "ordering": ["name"],
+                "unique_together": {("region", "name")},
             },
         ),
         migrations.CreateModel(
-            name='District',
+            name="District",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('city', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='districts', to='location.city')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "city",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="districts",
+                        to="location.city",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'District',
-                'verbose_name_plural': 'Districts',
-                'ordering': ['name'],
-                'unique_together': {('city', 'name')},
+                "verbose_name": "District",
+                "verbose_name_plural": "Districts",
+                "ordering": ["name"],
+                "unique_together": {("city", "name")},
             },
         ),
     ]

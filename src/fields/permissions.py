@@ -21,10 +21,10 @@ class IsOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        if user.role == 'user':
+        if user.role == "user":
             return obj.user == user
-        elif user.role == 'owner':
+        elif user.role == "owner":
             return obj.field.owner == user
-        elif user.role == 'admin':
+        elif user.role == "admin":
             return True
         return False
