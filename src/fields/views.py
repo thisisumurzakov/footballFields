@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import ExpressionWrapper, F, FloatField, Q
 from django.db.models.functions import ACos, Cos, Radians, Sin
 from django.utils import dateparse, timezone
@@ -22,7 +23,9 @@ class FootballFieldListCreateView(generics.ListCreateAPIView):
     Create a new football field. Only owners can create fields.
     """
 
-    queryset = FootballField.objects.all()
+    queryset = FootballField.objects.select_related(
+        "owner", "district"
+    ).prefetch_related("images")
     serializer_class = FootballFieldSerializer
     permission_classes = [IsOwnerRoleOrReadOnly]
     filter_backends = [DjangoFilterBackend]
@@ -66,7 +69,9 @@ class FootballFieldDetailView(generics.RetrieveUpdateDestroyAPIView):
     Delete a football field. Only the owner can delete.
     """
 
-    queryset = FootballField.objects.all()
+    queryset = FootballField.objects.select_related(
+        "owner", "district"
+    ).prefetch_related("images")
     serializer_class = FootballFieldSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
@@ -101,7 +106,7 @@ class BookingListCreateView(generics.ListCreateAPIView):
     Create a new booking for a field.
     """
 
-    queryset = Booking.objects.all()
+    queryset = Booking.objects.select_related("user", "field__owner", "field__district")
     serializer_class = BookingSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
@@ -112,7 +117,13 @@ class BookingListCreateView(generics.ListCreateAPIView):
         responses={201: BookingSerializer, 400: "Invalid input", 403: "Forbidden"},
     )
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        # Lock the field and start a transaction to prevent race conditions
+        with transaction.atomic():
+            FootballField.objects.select_for_update().get(
+                pk=serializer.validated_data["field"].id
+            )
+            # Check for overlapping bookings and other validation logic
+            serializer.save(user=self.request.user)
 
     @swagger_auto_schema(
         operation_description="List all bookings for the authenticated user or owner's fields",
@@ -165,7 +176,9 @@ class AvailableFieldsListView(generics.ListAPIView):
     List available football fields. Can filter by district, time range, and proximity to a location.
     """
 
-    queryset = FootballField.objects.all()
+    queryset = FootballField.objects.select_related("district").prefetch_related(
+        "bookings"
+    )
     serializer_class = FootballFieldSerializer
     permission_classes = [permissions.AllowAny]
     filter_backends = [DjangoFilterBackend]
