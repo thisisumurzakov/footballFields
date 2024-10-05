@@ -1,0 +1,12 @@
+.idea
+*.env
+*.env.*
+*.pyc
+/static/
+/media/
+venv
+*.pyo
+*.pyc
+*.class
+mediafiles/
+staticfiles/
