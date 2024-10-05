@@ -156,3 +156,9 @@ REDIS_PORT = os.environ.get("REDIS_PORT")
 
 ACTIVATION_CODE_EXPIRY = os.environ.get("ACTIVATION_CODE_EXPIRY")
 SMS_CLIENT_CLASS = "users.api_clients.eskiz_sms_client.EskizSmsClient"
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
+    }
+}

@@ -3,6 +3,7 @@ import json
 import redis
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -44,6 +45,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop("password2")
+        password = validated_data.pop("password")
+
+        # Hash the password before saving it to Redis
+        hashed_password = make_password(password)
+        validated_data["password"] = hashed_password
+
         # activation_code = f"{random.randint(100000, 999999)}"
         activation_code = "123456"
         phone_number = validated_data["phone_number"]
